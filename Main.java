@@ -135,7 +135,7 @@ public class Main {
                     }
                 }
             }
-            
+
             public void addToLengthList(ArrayList<Integer> lengthList, int i, int j) {
                 lengthList.add(i);
                 lengthList.add(j);
@@ -159,7 +159,9 @@ public class Main {
             }
 
             private static HuffmanTable createLiteralCodesTable() {
-                HuffmanTable table = new HuffmanTable(286);
+                Main mainInstance = new Main();
+                Main.Deflate deflateInstance = mainInstance.new Deflate();
+                Main.Deflate.HuffmanTable table = deflateInstance.new HuffmanTable(30);
                 int next = 0;
                 for (int i = 256; i <= 279; i++) {
                     setCode(table, i, next++, 7);
@@ -176,15 +178,19 @@ public class Main {
                 for (int i = 144; i <= 255; i++) {
                     setCode(table, i, next++, 9);
                 }
+                return table;
             }
 
             private static HuffmanTable createDistanceCodesTable() {
-                HuffmanTable table = new HuffmanTable(30);
+                Main mainInstance = new Main();
+                Main.Deflate deflateInstance = mainInstance.new Deflate();
+                Main.Deflate.HuffmanTable table = deflateInstance.new HuffmanTable(30);
                 for (int i = 0; i <= 29; i++) {
                     setCode(table, i, i, 5);
                 }
+                return table;
             }
-
+        }
         public class HuffmanTree {
             private Node root;
             private int numSym;
