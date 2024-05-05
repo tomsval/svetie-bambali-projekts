@@ -182,9 +182,7 @@ public class Main {
             }
 
             private static HuffmanTable createDistanceCodesTable() {
-                Main mainInstance = new Main();
-                Main.Deflate deflateInstance = mainInstance.new Deflate();
-                Main.Deflate.HuffmanTable table = deflateInstance.new HuffmanTable(30);
+                Main.Deflate.HuffmanTable table = new Main().new Deflate().new HuffmanTable(30);
                 for (int i = 0; i <= 29; i++) {
                     setCode(table, i, i, 5);
                 }
