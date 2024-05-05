@@ -8,6 +8,9 @@
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
@@ -77,7 +80,12 @@ public class Main {
         }
 
         private static byte[] read(String fileName) {
-            // TODO
+            try {
+                return Files.readAllBytes(Paths.get(fileName));
+            } catch (IOException e) {
+                System.out.println("File not found");
+                return null;
+            }
         }
 
         private static void write(String fileName, byte[] data) {
