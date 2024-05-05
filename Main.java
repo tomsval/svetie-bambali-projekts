@@ -6,6 +6,7 @@
 // 231RDB301 Rihards Doniks
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -89,17 +90,100 @@ public class Main {
             public int[] codeLengthArray;
 
             public HuffmanTable(int symbolCount) {
-                // TODO
+                codeLengthArray = new int[symbolCount];
+                codeArray = new int[symbolCount];
+            }
+
+            public void pack(ArrayList<Integer> lengthList, int[] codeLengthArray, int[] conditions, int[] addLengthConditions) {
+                int firstLengthValue = codeLengthArray[0];
+                int sequenceCount = 1;
+                int k = codeLengthArray.length;
+                for (int i = 1; i <= k; i++) {
+                    if (codeLengthArray[i] == firstLengthValue && i < k) {
+                        sequenceCount++;
+                    } else {
+                        lengthList.add(firstLengthValue);
+                        sequenceCount--;
+                        if (firstLengthValue != 0) {
+                            for (int j = 6; j >= 3;) {
+                                if (!((sequenceCount - j) < 0)) {
+                                    addToLengthList(lengthList, 16, j - 3);
+                                    sequenceCount -= j;
+                                } else {
+                                    j--;
+                                }
+                            }
+                        } else {
+                            for (int l = 0, j = 138; l < conditions.length; l++) {
+                                for (; j >= conditions[i];) {
+                                    if (!((sequenceCount - j) < 0)) {
+                                        addToLengthList(lengthList, addLengthConditions[i], j - conditions[i]);
+                                        sequenceCount -= j;
+                                    } else {
+                                        j--;
+                                    }
+                                }
+                            }
+                        }
+                        for (; sequenceCount > 0; sequenceCount--) {
+                            lengthList.add(firstLengthValue);
+                        }
+                        if (i < k) {
+                            sequenceCount = 1;                         
+                            firstLengthValue = codeLengthArray[i];
+                        }
+                    }
+                }
+            }
+            
+            public void addToLengthList(ArrayList<Integer> lengthList, int i, int j) {
+                lengthList.add(i);
+                lengthList.add(j);
             }
 
             public ArrayList<Integer> packCodeLengths(int[] literalCodeLengthArray, int[] distanceCodeLengthArray) {
-                // TODO
+                ArrayList<Integer> lengthList = new ArrayList<Integer>();
+                int[] conditions = {11, 3};
+                int[] addLengthConditions = {18, 17};
+                pack(lengthList, literalCodeLengthArray, conditions, addLengthConditions);
+		        pack(lengthList, distanceCodeLengthArray, conditions, addLengthConditions);
+		        return lengthList;
             }
 
-            public void pack(ArrayList<Integer> lengthList, int[] codeLengthArray) {
-                // TODO
+            public static final HuffmanTable LiteralCodesTable = createLiteralCodesTable();
+            public static final HuffmanTable DistanceCodesTable = createDistanceCodesTable();
+
+            public static void setCode(HuffmanTable table, int index, int code, int codeLength) {
+                table.codeArray[index] = code;
+                table.codeLengthArray[index] = codeLength;
             }
-        }
+
+            private static HuffmanTable createLiteralCodesTable() {
+                HuffmanTable table = new HuffmanTable(286);
+                int next = 0;
+                for (int i = 256; i <= 279; i++) {
+                    setCode(table, i, next++, 7);
+                }
+                next <<= 1;
+                for (int i = 0; i <= 143; i++) {
+                    setCode(table, i, next++, 8);
+                }
+                for (int i = 280; i <= 285; i++) {
+                    setCode(table, i, next++, 8);
+                }
+                next += 2;
+                next <<= 1;
+                for (int i = 144; i <= 255; i++) {
+                    setCode(table, i, next++, 9);
+                }
+            }
+
+            private static HuffmanTable createDistanceCodesTable() {
+                HuffmanTable table = new HuffmanTable(30);
+                for (int i = 0; i <= 29; i++) {
+                    setCode(table, i, i, 5);
+                }
+            }
 
         public class HuffmanTree {
             private Node root;
@@ -132,6 +216,7 @@ public class Main {
 
                 public int compare(Node node) {
                     // TODO
+                    return weight - node.weight;
                 }
             }
         }
